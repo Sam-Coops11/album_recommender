@@ -93,7 +93,8 @@ Welcome to the album rater/recommender
         elif choice == "P":
            display_all(albums)
         elif choice == "R":
-           pass
+           album = {'title':'Best of Afroman', 'artist':'Afroman', 'genre':'Reggae', 'rating':None}
+           recommend(albums, album)
         elif choice == "Q":
            print("Goodbye!")
         else:
@@ -104,6 +105,12 @@ Welcome to the album rater/recommender
 if __name__ == "__main__":
     # list of dict. of albums
     albums = []
+    # test cases
+    albums.append({'title':'One Love', 'artist':'Bob Marley', 'genre':'Reggae', 'rating':None})
+    albums.append({'title':'Chantodwn Babylon', 'artist':'Bob Marley', 'genre':'Reggae', 'rating':None})
+    albums.append({'title':'Exodus', 'artist':'Bob Marley', 'genre':'Reggae', 'rating':None})
+    albums.append({'title':'Best Of', 'artist':'Bob Marley', 'genre':'Reggae', 'rating':None})
+    albums.append({'title':'Nevermind', 'artist':'Nirvana', 'genre':'Rock', 'rating':None})
     # call menu
     menu(albums)
     
