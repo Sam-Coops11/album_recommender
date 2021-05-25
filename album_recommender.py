@@ -8,11 +8,10 @@
 
 
 # Add function
-def add(albums, album_id):
+def add(albums):
     """
     Adds an album to the albums collection
     asks user for title, artist, genre, rating
-    Increments the album_id
     Returns the updated album
     """
     # Add a title, artist and genre which are strings
@@ -30,19 +29,16 @@ def add(albums, album_id):
                 print("Rating must be between {} to {}".format(MIN_RATING, MAX_RATING))
             else:
                 break
-        except ValueError:
+        except:
             print("Rating must be between {} to {}".format(MIN_RATING, MAX_RATING))
 
     # add values to album dict.
     album = {"title":title, "artist":artist, "genre":genre, "rating":rating}
 
     # add our album to album collection
-    albums[album_id] = album
-
-    #increment album_id
-    album_id += 1
+    albums.append(album)
     
-    return albums, album_id
+    return albums
 
     
 # Edit function
@@ -51,9 +47,18 @@ def add(albums, album_id):
 # Delete function
 
 
-# Display all
-
-
+# Display all albums
+def display_all(albums):
+    """
+    Prints all albums in collection
+    """
+    print()
+    for album in albums:
+        print("Title: ", album["title"])
+        print("Artist: ", album["artist"])
+        print("Genre: ", album["genre"])
+        print("Rating: ", album["rating"])
+        print()
 # Rate function
 
 
@@ -61,13 +66,14 @@ def add(albums, album_id):
 
 
 # Menu
-def menu(albums, album_id):
+def menu(albums):
     """
     Displays options
     """
 
     # print menu and loop it until user quits
-    while True:
+    choice = None
+    while choice != "Q":
         print("""
 Welcome to the album rater/recommender
 (A)dd an album
@@ -79,28 +85,25 @@ Welcome to the album rater/recommender
         choice = input("Please enter your choice: ").strip().upper()
 
         if choice == "A":
-            add(albums, album_id)
+            albums = add(albums)
         elif choice == "E":
             pass
         elif choice == "D":
            pass
         elif choice == "P":
-           pass
+           display_all(albums)
         elif choice == "R":
            pass
         elif choice == "Q":
            print("Goodbye!")
-           break
         else:
             print("That is not an option")
 
 # Main routine
 
 if __name__ == "__main__":
-    #dict. of dict. of albums
-    albums = {}
-
-    # track the current album ID
-    album_id = 0
-    menu(albums, album_id)
+    # list of dict. of albums
+    albums = []
+    # call menu
+    menu(albums)
     
