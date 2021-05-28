@@ -1,116 +1,183 @@
 ##
 # album_recommender.py
 # Sam Cooper
-# 25/5/21
-# Asks the user to enter an album, title, genre and rating
+# 28/5/21
+# Asks the user to enter an album
+# An album a title, artist, genre and rating
 # The user can add, edit, delete and rate an album
-# If the user rates an album, recommend another album of the same genre
-
+# If the user rates an album, recommend them another album (from the same genre)
+import random
 
 # Add function
 def add(albums):
     """
     Adds an album to the albums collection
-    asks user for title, artist, genre, rating
+    Asks user for title, artist, genre and rating
     Returns the updated album
     """
     # Add a title, artist and genre which are strings
-    title = input("Title of album: ")
+    title = input("Title: ")
     artist = input("Artist: ")
     genre = input("Genre: ")
 
+    # Add the values to the album dictionary
+    album = {"title":title, "artist":artist, "genre":genre, "rating":None}
+
+    # Add our album to our albums collection
+    albums.append(album)
+
+    return albums
+
+        
+# Edit function
+def edit(albums):
+    """
+    Asks what key and value to change
+    Print it back to the user
+    """
+    album = find_album(albums)
+    key = input("What would you like to change?: ").lower().strip()             
+    value = input("What do you want the new {} to be?: ".format(key)).title()
+    album.update({key:value})
+    print()
+    print_album(album)
+    
+# Delete function
+
+
+# Display all
+def display_all(albums):
+    """
+    Print out all the albums in the collection
+    """
+    # Print out each album
+    for album in albums:
+        # Print out the details of each album
+        print_album(album)
+
+
+def print_album(album):
+    """
+    Takes in an album and prints the details
+    """
+    print("Title: ", album["title"])
+    print("Artist:", album["artist"])
+    print("Genre:", album["genre"])
+    print("Rating:", album["rating"])
+    print()     # New line after each album
+
+    
+def find_album(albums):
+    """
+    Find an album based on the title and return it
+    """
+    search_title = input("Please enter an album to search for: ")
+
+    for album in albums:
+        if album["title"] == search_title:
+            return album
+
+# Rate function
+def rate_album(albums):
+    """
+    Rate an album and return the collection
+    """
+    search_album = find_album(albums)  # Get an album to rate
+    
     # Add a rating between 1 and 5 and force input
     MIN_RATING = 1
     MAX_RATING = 5
     while True:
         try:
-            rating = int(input("Rating ({} to {}): ".format(MIN_RATING, MAX_RATING)))
+            rating = int(input("Rating {}-{}: ".format(MIN_RATING, MAX_RATING)))
             if rating < MIN_RATING or rating > MAX_RATING:
-                print("Rating must be between {} to {}".format(MIN_RATING, MAX_RATING))
+                print("Rating must be between {}-{}: ".format(MIN_RATING, MAX_RATING))
             else:
                 break
         except:
-            print("Rating must be between {} to {}".format(MIN_RATING, MAX_RATING))
+            print("Rating must be between {}-{}: ".format(MIN_RATING, MAX_RATING))
 
-    # add values to album dict.
-    album = {"title":title, "artist":artist, "genre":genre, "rating":rating}
+    # Add the rating to the album
+    search_album["rating"] = rating
 
-    # add our album to album collection
-    albums.append(album)
+    # Recommend an album after rating it
+    recommend(albums, search_album)
     
     return albums
 
-    
-# Edit function
-
-
-# Delete function
-
-
-# Display all albums
-def display_all(albums):
-    """
-    Prints all albums in collection
-    """
-    print()
-    for album in albums:
-        print("Title: ", album["title"])
-        print("Artist: ", album["artist"])
-        print("Genre: ", album["genre"])
-        print("Rating: ", album["rating"])
-        print()
-# Rate function
-
 
 # Recommend function
+def recommend(albums, target_album):
+    """
+    Given an album, recommend another album in the same genre
+    """
+    # Find genre
+    genre = target_album["genre"]
+
+    # Add all albums of the same genre into a list
+    recommended_albums = []
+
+    for album in albums:
+        if album["genre"] == genre and album != target_album:
+            recommended_albums.append(album)
+
+    # Randomly choose an album from the list and recommend to user
+    selected_album = random.randint(0, len(recommended_albums)-1)
+    print(albums[selected_album])
+    
 
 
-# Menu
 def menu(albums):
     """
-    Displays options
+    Displays the options to the user and calls accordingly.
     """
 
-    # print menu and loop it until user quits
+    # Print the menu and loop until user quits
     choice = None
     while choice != "Q":
         print("""
-Welcome to the album rater/recommender
+Welcome to the Album rater and recommender
 (A)dd an album
+(F)ind an album
 (E)dit an album
 (D)elete an album
 (P)rint all albums
 (R)ate an album
 (Q)uit""")
-        choice = input("Please enter your choice: ").strip().upper()
+        choice = input("Please enter your choice: ").upper()
 
         if choice == "A":
             albums = add(albums)
+        elif choice == "F":
+            album = find_album(albums)
+            print_album(album)
         elif choice == "E":
-            pass
+            edit(albums)
         elif choice == "D":
-           pass
+            pass
         elif choice == "P":
-           display_all(albums)
+            display_all(albums)
         elif choice == "R":
-           album = {'title':'Best of Afroman', 'artist':'Afroman', 'genre':'Reggae', 'rating':None}
-           recommend(albums, album)
+            rate_album(albums)  # Find an album to rate
         elif choice == "Q":
-           print("Goodbye!")
+            print("Goodbye!")
         else:
-            print("That is not an option")
+            print("That is not an option you knucklehead!")
+
 
 # Main routine
-
 if __name__ == "__main__":
-    # list of dict. of albums
+    # declaring the list of dictionary of albums
     albums = []
-    # test cases
-    albums.append({'title':'One Love', 'artist':'Bob Marley', 'genre':'Reggae', 'rating':None})
-    albums.append({'title':'Chantodwn Babylon', 'artist':'Bob Marley', 'genre':'Reggae', 'rating':None})
-    albums.append({'title':'Exodus', 'artist':'Bob Marley', 'genre':'Reggae', 'rating':None})
-    albums.append({'title':'Best Of', 'artist':'Bob Marley', 'genre':'Reggae', 'rating':None})
-    albums.append({'title':'Nevermind', 'artist':'Nirvana', 'genre':'Rock', 'rating':None})
-    # call menu
+
+    # Test cases
+    albums.append({"title":"One Love", "artist":"Bob Marley", "genre":"Reggae", "rating":None})
+    albums.append({"title":"Chantdown Babylon", "artist":"Bob Marley", "genre":"Reggae", "rating":None})
+    albums.append({"title":"Exodus", "artist":"Bob Marley", "genre":"Reggae", "rating":None})
+    albums.append({"title":"Best Of", "artist":"Bob Marley", "genre":"Reggae", "rating":None})
+    albums.append({"title":"Nevermind", "artist":"Nirvana", "genre":"Rock", "rating":None})
+    albums.append({"title":"Catch a Fire", "artist":"The Wailers", "genre":"Reggae", "rating":None})
+
+
+    # Call the menu
     menu(albums)
-    
